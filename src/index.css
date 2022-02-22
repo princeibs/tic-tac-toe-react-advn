@@ -20,6 +20,7 @@ body {
   grid: repeat(3, 90px) / repeat(3, 90px);
   gap: 3px;
   background-color: rgb(186, 183, 183);
+  height: 100%;
 }
 
 .square {
