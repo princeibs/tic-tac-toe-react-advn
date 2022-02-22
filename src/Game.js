@@ -48,7 +48,11 @@ export default class Game extends React.Component {
       let lastLocation = (this.state.locationHistory[move - 1] + 1);
       const desc = move ? "Back to square " + lastLocation : "Back to start";
       return (
-        <button key={move} onClick={() => this.jumpTo(move)}>{desc}</button>
+        <button className={this.state.locationHistory.length === move ? "bold" : ""}
+          key={move}
+          id={move} onClick={() => this.jumpTo(move)}>
+          {desc}
+        </button>
       );
     });
 

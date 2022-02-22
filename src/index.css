@@ -59,7 +59,11 @@ button {
   font-family: consolas;
   margin: 5px 0;
   border-radius: 10px;
-  border-color: orange;
+  border-color: rgb(126, 250, 126);
   background-color: #bfbfbf
 }
 
+button.bold {
+  border-color: orange;
+  border-width: 4px;
+}
