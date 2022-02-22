@@ -56,9 +56,12 @@ export default class Game extends React.Component {
       );
     });
 
+    console.log(current.squares.includes(null));
     let status;
     if (winner) {
       status = winner + " Won";
+    } else if (!current.squares.includes(null)) {
+      status = "Draw";
     } else {
       status = (this.state.xIsNext ? "X" : "O") + " is next";
     }
