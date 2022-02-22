@@ -3,7 +3,10 @@ import Square from "./Square";
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+    return <Square
+      value={this.props.squares[i]}
+      onClick={() => this.props.onClick(i)}
+      className={this.props.winningSquares.includes(i) ? "square winning-square" : "square"} />;
   }
   render() {
     return (
