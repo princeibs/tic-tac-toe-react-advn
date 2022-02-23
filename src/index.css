@@ -88,7 +88,7 @@
 @media screen and (max-width: 500px) {
   body {
     background-color: rebeccapurple;
-    font-family: cursive;
+    font-family: cursive, Verdana, Geneva, Tahoma, sans-serif;
   }
 
   .game {
@@ -144,7 +144,7 @@
   button {
     /* padding: 10px auto; */
     font-size: 15px;
-    font-family: consolas;
+    font-family: consolas, Verdana, Geneva, Tahoma, sans-serif;
     margin: 5px 0;
     border-radius: 10px;
     border-color: rgb(126, 250, 126);
