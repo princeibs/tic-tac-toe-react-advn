@@ -59,7 +59,7 @@ export default class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = winner.winner + " Won";
+      status = "Winner: " + winner.winner;
       console.log(this.state.winningSquares);
     } else if (!current.squares.includes(null)) {
       status = "Draw";
@@ -68,7 +68,9 @@ export default class Game extends React.Component {
     }
 
     return (
-      <div className="game">
+      <div>
+        <div className="header">Tic-Tac-Toe</div>
+        <div className="game">        
         <Board
           squares={current.squares}
           onClick={(i) => this.handleClick(i)}
@@ -80,6 +82,8 @@ export default class Game extends React.Component {
           </div>
         </div>
       </div>
+      </div>
+      
     );
   }
 }
