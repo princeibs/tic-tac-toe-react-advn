@@ -32,12 +32,15 @@ export default class Game extends React.Component {
   }
 
   jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-      locationHistory: this.state.locationHistory.slice(0, step),
-      history: this.state.history.slice(0, step + 1),
-    });
+    if (window.confirm("Are you sure you want to travel back in the game? \n This action cannot be undone")) {
+      this.setState({
+        stepNumber: step,
+        xIsNext: (step % 2) === 0,
+        locationHistory: this.state.locationHistory.slice(0, step),
+        history: this.state.history.slice(0, step + 1),
+      });
+    }
+
   }
 
   render() {
@@ -70,20 +73,20 @@ export default class Game extends React.Component {
     return (
       <div>
         <div className="header">Tic-Tac-Toe</div>
-        <div className="game">        
-        <Board
-          squares={current.squares}
-          onClick={(i) => this.handleClick(i)}
-          winningSquares={this.state.winningSquares} />
-        <div className="control-panel">
-          <div className="status">{status}</div>
-          <div className="moves">
-            {moves}
+        <div className="game">
+          <Board
+            squares={current.squares}
+            onClick={(i) => this.handleClick(i)}
+            winningSquares={this.state.winningSquares} />
+          <div className="control-panel">
+            <div className="status">{status}</div>
+            <div className="moves">
+              {moves}
+            </div>
           </div>
         </div>
       </div>
-      </div>
-      
+
     );
   }
 }
