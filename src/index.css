@@ -164,3 +164,15 @@
     display: none;
   }
 }
+
+.drop-down {
+  padding: 10px;
+  margin: 5px 25px;
+  font-size: 20px;
+  font-family: inherit;
+  border-radius: 5px;
+}
+
+.drop-option {
+  background-color: lightgray;
+}
