@@ -7,7 +7,8 @@ export default class Game extends React.Component {
     this.state = {
       xIsNext: true,
       stepNumber: 0,
-      gameMode: "single",
+      gameMode: "multi",
+      gameStatus: "ongoing",
       locationHistory: [],
       winningSquares: [],
       history: [
@@ -19,25 +20,37 @@ export default class Game extends React.Component {
   }
 
   secondPlayer(squares) {
-    if (!this.state.xIsNext) {
-      const freeSquares = squares.filter((value, index) => index);
-      console.log("Second player just played.");
-      console.log(freeSquares);
-      this.setState({
-        xIsNext: !this.state.xIsNext,
+      const freeSquares = [];
+      for (let i = 0; i < squares?.length; i++) {
+        if (!squares[i]) {
+          freeSquares.push(i);
+        }
+      }
+      
+      const choice = freeSquares[Math.floor(Math.random() * freeSquares.length)];
+      this.setState({       
+        xIsNext: false,     
       });
-    }
+      this.play(choice)        
   }
 
   handleClick(i) {
+    const squares = this.play(i)
+    if (this.state.gameMode === "single") {
+      this.secondPlayer(squares);
+    }
+
+  }
+
+  play(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     const winner = calculateWinner(squares);
     if (winner || squares[i]) {
       this.setState({
-        winningSquares: winner.winningSquares,
-      })
+        winningSquares: winner?.winningSquares,
+      });
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
@@ -47,10 +60,7 @@ export default class Game extends React.Component {
       xIsNext: !this.state.xIsNext,
       locationHistory: this.state.locationHistory.concat(i),
     });
-
-    if (this.state.gameMode === "single") {
-      this.secondPlayer(squares);
-    }
+   return squares;
   }
 
   jumpTo(step) {
@@ -74,6 +84,14 @@ export default class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
+    const statusStyle = () => {
+      const gameStatus = this.state.gameStatus;
+      return (
+        "status " +
+        (gameStatus === "ongoing" ? "" : gameStatus === "win" ? "win" : "draw")
+      );
+    };
+
     const handleChangeGameMode = (event) => {
       if (
         window.confirm(
@@ -92,7 +110,6 @@ export default class Game extends React.Component {
             },
           ],
         });
-      console.log("Game mode at the moment: " + this.state.gameMode);
     };
 
     const moves = history.map((step, move) => {
@@ -129,7 +146,7 @@ export default class Game extends React.Component {
             winningSquares={this.state.winningSquares}
           />
           <div className="control-panel">
-            <div className="status">{status}</div>
+            <div className={statusStyle()}>{status}</div>
             <div className="moves">{moves}</div>
           </div>
           <div>

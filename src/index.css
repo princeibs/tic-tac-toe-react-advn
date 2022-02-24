@@ -176,3 +176,13 @@
 .drop-option {
   background-color: lightgray;
 }
+
+.draw {
+  background-color: orange;
+  color: white;
+}
+
+.win {
+  background-color: rgb(6, 206, 6);
+  color: white;
+}
