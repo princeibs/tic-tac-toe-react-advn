@@ -138,7 +138,7 @@ export default class Game extends React.Component {
 
     return (
       <div>
-        <div className="header">Tic-Tac-Toe</div>
+        <div className="header">Tic-Tac-Toe Game</div>
         <div className="game">
           <Board
             squares={current.squares}
