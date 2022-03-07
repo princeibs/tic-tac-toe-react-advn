@@ -1,7 +1,7 @@
 @media screen and (min-width: 501px) {
   body {
     background-color: rebeccapurple;
-    font-family: cursive;
+    font-family: 'Gloria Hallelujah', cursive;
   }
   /* * {
     border: solid 1px red
@@ -88,7 +88,7 @@
 @media screen and (max-width: 500px) {
   body {
     background-color: rebeccapurple;
-    font-family: cursive, Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Gloria Hallelujah', cursive;
   }
 
   .game {
