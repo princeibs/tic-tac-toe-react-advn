@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 import Board from "./Board";
 
 export default function Game(props) {
@@ -12,6 +13,7 @@ export default function Game(props) {
   const [gameHistory, setGameHistory] = useState([
     { squares: Array(9).fill(null) },
   ]);
+  let statusStyle;
 
   // function that respond to every square clicked on the board
   function handleClick(i) {
@@ -23,8 +25,12 @@ export default function Game(props) {
 
     // When there is a winner, or the squares are filled up
     // set the winning square and exit the game
-    if (winner || squares[i]) {
+    if (winner) {
+      setGameStatus("win");
       setWinningSquares(winner?.winningSquares);
+      return;
+    } else if (squares[i]) {
+      setGameStatus("draw");
       return;
     }
 
@@ -40,7 +46,7 @@ export default function Game(props) {
   useEffect(() => {
     // When the game mode is set to multiplayer and
     // the first player has played
-    if (gameMode === "single" && !xIsNext) {      
+    if (gameMode === "single" && !xIsNext) {
       const freeSquares = [];
       for (let i = 0; i < current.squares?.length; i++) {
         if (!current.squares[i]) {
@@ -48,9 +54,9 @@ export default function Game(props) {
         }
       }
       // Select a random square from the list of free squares
-      const choice = freeSquares[Math.floor(Math.random() * freeSquares?.length)];      
+      const choice = freeSquares[Math.floor(Math.random() * freeSquares?.length)];
       handleClick(choice); // Second player plays
-    }    
+    }
   }, [xIsNext]); // Only run this function when the current player switches
 
   // Jump to board `step` in history
@@ -67,6 +73,7 @@ export default function Game(props) {
       setXIsNext(step % 2 === 0);
       setLocationHistory(locationHistory.slice(0, step));
       setGameHistory(gameHistory.slice(0, step + 1));
+      setGameStatus("ongoing");
     }
   }
 
@@ -77,8 +84,8 @@ export default function Game(props) {
         "Are you sure you want to change the game mode? \nThis will erase the current game"
       )
     )
-    // Reset state variables after changing game mode
-    setGameMode(event.target.value);
+      // Reset state variables after changing game mode
+      setGameMode(event.target.value);
     setXIsNext(true);
     setStepNumber(0);
     setLocationHistory([]);
@@ -119,8 +126,16 @@ export default function Game(props) {
     status = (xIsNext ? "X" : "O") + " is next";
   }
 
+  statusStyle = `status ${gameStatus === "win" ?
+    "win" :
+    gameStatus === "draw" ?
+      "draw" :
+      ""}`;
+
+
   return (
     <div>
+      {gameStatus === "win" && <Confetti />}
       <div className="header">Tic-Tac-Toe Game</div>
       <div className="game">
         <Board
@@ -129,7 +144,7 @@ export default function Game(props) {
           winningSquares={winningSquares}
         />
         <div className="control-panel">
-          <div className="status">{status}</div>
+          <div className={statusStyle}>{status}</div>
           <div className="moves">{moves}</div>
         </div>
         <div>
