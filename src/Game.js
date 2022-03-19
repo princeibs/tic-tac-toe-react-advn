@@ -7,19 +7,50 @@ export default class Game extends React.Component {
     this.state = {
       xIsNext: true,
       stepNumber: 0,
+      gameMode: "multi",
+      gameStatus: "ongoing",
       locationHistory: [],
       winningSquares: [],
-      history: [{
-        squares: Array(9).fill(null),
-      }]
+      history: [
+        {
+          squares: Array(9).fill(null),
+        },
+      ],
+    };
+  }
+
+  secondPlayer(squares) {
+    const freeSquares = [];
+    for (let i = 0; i < squares?.length; i++) {
+      if (!squares[i]) {
+        freeSquares.push(i);
+      }
     }
+
+    const choice = freeSquares[Math.floor(Math.random() * freeSquares.length)];
+    this.setState({
+      xIsNext: false,
+    });
+    this.play(choice)
   }
 
   handleClick(i) {
+    const squares = this.play(i)
+    if (this.state.gameMode === "single") {
+      this.secondPlayer(squares);
+    }
+
+  }
+
+  play(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    const winner = calculateWinner(squares);
+    if (winner || squares[i]) {
+      this.setState({
+        winningSquares: winner?.winningSquares,
+      });
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
@@ -29,18 +60,23 @@ export default class Game extends React.Component {
       xIsNext: !this.state.xIsNext,
       locationHistory: this.state.locationHistory.concat(i),
     });
+    return squares;
   }
 
   jumpTo(step) {
-    if (window.confirm("Are you sure you want to travel back in the game? \n This action cannot be undone")) {
+    if (
+      window.confirm(
+        `Are you sure you want to travel back? \nYou can't undo this action`
+      )
+    ) {
       this.setState({
+        winningSquares: [],
         stepNumber: step,
-        xIsNext: (step % 2) === 0,
+        xIsNext: step % 2 === 0,
         locationHistory: this.state.locationHistory.slice(0, step),
         history: this.state.history.slice(0, step + 1),
       });
     }
-
   }
 
   render() {
@@ -48,13 +84,44 @@ export default class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
+    const statusStyle = () => {
+      const gameStatus = this.state.gameStatus;
+      return (
+        "status " +
+        (gameStatus === "ongoing" ? "" : gameStatus === "win" ? "win" : "draw")
+      );
+    };
+
+    const handleChangeGameMode = (event) => {
+      if (
+        window.confirm(
+          "Are you sure you want to change the game mode? \nThis will erase the current game"
+        )
+      )
+        this.setState({
+          gameMode: event.target.value,
+          xIsNext: true,
+          stepNumber: 0,
+          locationHistory: [],
+          winningSquares: [],
+          history: [
+            {
+              squares: Array(9).fill(null),
+            },
+          ],
+        });
+    };
+
     const moves = history.map((step, move) => {
-      let lastLocation = (this.state.locationHistory[move - 1] + 1);
+      let lastLocation = this.state.locationHistory[move - 1] + 1;
       const desc = move ? "Back to square " + lastLocation : "Back to start";
       return (
-        <button className={this.state.locationHistory.length === move ? "bold" : ""}
+        <button
+          className={this.state.locationHistory.length === move ? "bold" : ""}
           key={move}
-          id={move} onClick={() => this.jumpTo(move)}>
+          id={move}
+          onClick={() => this.jumpTo(move)}
+        >
           {desc}
         </button>
       );
@@ -63,7 +130,6 @@ export default class Game extends React.Component {
     let status;
     if (winner) {
       status = "Winner: " + winner.winner;
-      console.log(this.state.winningSquares);
     } else if (!current.squares.includes(null)) {
       status = "Draw";
     } else {
@@ -72,21 +138,33 @@ export default class Game extends React.Component {
 
     return (
       <div>
-        <div className="header">Tic-Tac-Toe</div>
+        <div className="header">Tic-Tac-Toe Game</div>
         <div className="game">
           <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
-            winningSquares={this.state.winningSquares} />
+            winningSquares={this.state.winningSquares}
+          />
           <div className="control-panel">
-            <div className="status">{status}</div>
-            <div className="moves">
-              {moves}
-            </div>
+            <div className={statusStyle()}>{status}</div>
+            <div className="moves">{moves}</div>
+          </div>
+          <div>
+            <select
+              value={this.state.gameMode}
+              onChange={handleChangeGameMode}
+              className="drop-down"
+            >
+              <option className="drop-option" value="multi">
+                Single Player
+              </option>
+              <option className="drop-option" value="single">
+                Multi Player
+              </option>
+            </select>
           </div>
         </div>
       </div>
-
     );
   }
 }
@@ -104,7 +182,7 @@ function calculateWinner(squares) {
     [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]
+    const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       const obj = { winner: squares[a], winningSquares: lines[i] };
       return obj;
