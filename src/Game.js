@@ -29,8 +29,9 @@ export default function Game(props) {
       setGameStatus("win");
       setWinningSquares(winner?.winningSquares);
       return;
-    } else if (squares[i]) {
-      setGameStatus("draw");
+    
+    // When an already occupied square is clicked, do nothing
+    } else if (squares[i]) {      
       return;
     }
 
@@ -54,8 +55,8 @@ export default function Game(props) {
         }
       }
       // Select a random square from the list of free squares
-      const choice = freeSquares[Math.floor(Math.random() * freeSquares?.length)];
-      handleClick(choice); // Second player plays
+      const choice = freeSquares[Math.floor(Math.random() * freeSquares?.length)];  
+      setTimeout(handleClick(choice), 3000); // Second player plays      
     }
   }, [xIsNext]); // Only run this function when the current player switches
 
@@ -90,6 +91,7 @@ export default function Game(props) {
     setStepNumber(0);
     setLocationHistory([]);
     setWinningSquares([]);
+    setGameStatus("ongoing");
     setGameHistory([
       {
         squares: Array(9).fill(null),
